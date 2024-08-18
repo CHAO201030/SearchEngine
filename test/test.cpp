@@ -1,5 +1,7 @@
 #include <cpp58.hpp>
 #include "../include/simhash/cppjieba/Jieba.hpp"
+#include <tinyxml2.h>
+
 // bool isChinese(char ch)
 // {
 //     return 0x80 & ch;
@@ -42,6 +44,7 @@
 //         i += bytes;
 //     }
 // }
+
 int main()
 {
     // 示例HTML字符串，包含两个相邻的<p>标签和它们之间的空格
@@ -115,6 +118,7 @@ int main()
     cout << _format_xml << (_format_xml == q) << "\n";
     */
 
+   /*
     unordered_map<string, vector<pair<int, int>>> tf_df_map;
     map<string, int> wf_map1({{"hello", 1}, {"hi", 2}});
     map<string, int> wf_map2({{"hello", 99}, {"hi", 88}, {"tg", 520}});
@@ -148,22 +152,34 @@ int main()
                  << ", frequence = " << it.second[i].second << "\n";
         }
     }
+*/
 
+    string s = "<webpage>\n\t<docid>1</docid>\n\t<content>全国III卷的实用类文本阅读节选自五月《文汇报》的一篇对谈《对话<钟南山：苍生在上>作者》，“书卷多情似故人</content>\n</webpage>";
+    
+    string content = "全国III卷的实用类文本阅读节选自五月《文汇报》的一篇对谈《对话<钟南山：苍生在上>作者》，“书卷多情似故人";
 
+    size_t left_arrow = content.find("<");
+    if(left_arrow != std::string::npos)
+    {
+        content.erase(left_arrow, 1);
+        size_t right_arrow = content.find(">");
+        if(right_arrow == std::string::npos)
+        {
+            content = "NULL";
+        }
+        else
+        {
+            content.erase(right_arrow, 1);
+        }
+    }
 
-    // std::unordered_map<std::string, std::unordered_map<std::string, int>> outerMap;
-    // std::unordered_map<std::string, int> innerMap;
+    // using namespace tinyxml2;
 
-    // // 假设我们有一些数据要存储
-    // innerMap["key1"] = 1;
-    // innerMap["key2"] = 2;
+    // XMLDocument doc;
+    // doc.Parse(s.c_str());
+    // XMLElement * page_elem = doc.FirstChildElement("webpage");
+    // XMLElement * doc_ = page_elem->FirstChildElement("docid");
+    // XMLElement * cont_ = page_elem->FirstChildElement("content");
 
-    // // 将 innerMap 作为 outerMap 的值
-    // outerMap["outerKey"] = innerMap;
-
-    // // 访问 outerMap 的值
-    // std::unordered_map<std::string, int>& innerMapRef = outerMap["outerKey"];
-    // std::cout << innerMapRef["key1"] << std::endl; // 输出: 1
-    // std::cout << innerMapRef["key2"] << std::endl; // 输出: 2
     return 0;
 }

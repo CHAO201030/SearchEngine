@@ -45,9 +45,9 @@ private:
 
     bool isDuplicateWebPage(uint64_t cur_page_figure_print);
 
-    void storeIntoWebPageLib(ofstream & ofs, WebPage & cur_page);
+    void storeIntoWebPageLib(ofstream & ofs, WebPage & cur_page, int & new_page_len);
 
-    void storeIntoOffsetLib(ofstream & ofs, int doc_id, int offset, int page_len);
+    void storeIntoOffsetLib(ofstream & ofs, int doc_id, int & offset, int page_len);
 
 private:
     void loadUnrepeatedWebPageOffsetLib();

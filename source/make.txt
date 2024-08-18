@@ -1,0 +1,5 @@
+g++ WebPageLib.cpp Configuration.cpp DirScanner.cpp generate_web_page_lib.cpp -g -ltinyxml2 -o generate_web_page_lib
+
+g++ Configuration.cpp PageLibPreprocessor.cpp WebPage.cpp SplitToolCppJieba.cpp generate_unrepeated_web_page_lib.cpp -ltinyxml2 -g -o generate_unrepeated_web_page_lib
+
+g++ Configuration.cpp PageLibPreprocessor.cpp WebPage.cpp SplitToolCppJieba.cpp generate_invert_index_lib.cpp -ltinyxml2 -g -o generate_invert_index_lib

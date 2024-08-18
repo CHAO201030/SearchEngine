@@ -9,8 +9,8 @@ Configuration::Configuration()
 
 void Configuration::readConfigurationFile()
 {
-    // ifstream cfg_ifs("../config/myconf.conf");
-    ifstream cfg_ifs("../config/test.conf");
+    ifstream cfg_ifs("../config/myconf.conf");
+    // ifstream cfg_ifs("../config/test.conf");
 
     string line;
     

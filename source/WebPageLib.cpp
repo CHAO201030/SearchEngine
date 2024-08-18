@@ -99,7 +99,17 @@ void WebPageLib::processWebPage(const string file_path)
                 title.erase(error_title_begin_pos, 8);
             }
 
-            _web_pages.push_back(generateWebPage(title, link, content));
+            regex and_nbps(R"(\&nbsp;)");
+
+            content = std::regex_replace(content, and_nbps, "");
+
+            regex space_pattern(R"(^\s*)");
+            content = std::regex_replace(content, space_pattern, "");
+
+            if(content.size() != 0)
+            {
+                _web_pages.push_back(generateWebPage(title, link, content));
+            }
         }
 
         item_element = item_element->NextSiblingElement();
@@ -119,13 +129,41 @@ void WebPageLib::getRssItem(XMLElement * item_element, string & title, string & 
 
     title = p_title ? p_title->GetText() : "NULL";
     
+    size_t left_arrow = title.find("<");
+    if(left_arrow != std::string::npos)
+    {
+        title.erase(left_arrow, 1);
+        
+        size_t right_arrow = title.find(">");
+        
+        if(right_arrow == std::string::npos)
+        {
+            title = "NULL";
+        }
+        else
+        {
+            title.erase(right_arrow, 1);
+        }
+    }
+
     link = p_link ? p_link->GetText() : "NULL";
+    
     if(link.find("http") == std::string::npos)
     {
         link = "NULL";
     }
 
     content = p_content ? p_content->GetText() : "NULL";    
+    
+    // size_t right_right_arrow = content.find(">>");
+    //
+    // if(right_right_arrow != std::string::npos)
+    // {
+    //     content.erase(right_right_arrow, 2);
+    // }
+
+
+
     if(content.size() == 0)
     {
         content = "NULL";

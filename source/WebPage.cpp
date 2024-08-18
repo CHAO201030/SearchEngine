@@ -56,35 +56,37 @@ void WebPage::extractWebPage()
     
     XMLElement * page_elem    = doc.FirstChildElement("webpage");
 
+    
     if(page_elem == nullptr)
     {
         // 去掉title中的<>标签
-        size_t title_begin = _format_xml.find("<title>");
-        size_t title_end   = _format_xml.find("</title>");
+        size_t title_begin = _format_xml.find("<content>");
+        size_t title_end   = _format_xml.find("</content>");
         size_t ignore_size = _format_xml.substr(title_end, _format_xml.size()).size();
 
-        string title_tag = _format_xml.substr(title_begin, _format_xml.substr(title_begin).size() - ignore_size + 8);
+        string title_tag = _format_xml.substr(title_begin, _format_xml.substr(title_begin).size() - ignore_size + 10);
 
-        string process_title = title_tag.substr(title_tag.find("<title>") + 7, title_tag.size() - 15);
+        string process_title = title_tag.substr(title_tag.find("<content>") + 9, title_tag.size() - 19);
 
         size_t left_arrow = process_title.find("<");
         size_t right_arrow = process_title.find(">");
 
         if(left_arrow == string::npos || right_arrow == string::npos)
         {
-            std::cerr << "\t[ERROR] : Error Page -> : " << process_title << "\n";
+            // std::cerr << "\t[ERROR] : Error Page -> : " << process_title << "\n";
             return;
         }
 
-        _format_xml.erase(title_begin + left_arrow + 7, 1);
-        _format_xml.erase(title_begin + right_arrow + 6, 1);
+        _format_xml.erase(title_begin + left_arrow + 9, 1);
+        _format_xml.erase(title_begin + right_arrow + 8, 1);
 
         doc.Parse(_format_xml.c_str());
         page_elem = doc.FirstChildElement("webpage");
     }
+    
 
-    if(page_elem)
-    {
+    //if(page_elem)
+    //{
         XMLElement * docid_elem   = page_elem->FirstChildElement("docid");
         XMLElement * title_elem   = page_elem->FirstChildElement("title");
         XMLElement * link_elem    = page_elem->FirstChildElement("link");
@@ -94,7 +96,7 @@ void WebPage::extractWebPage()
         _title   = title_elem->GetText();
         _url     = link_elem->GetText();
         _content = content_elem->GetText();
-    }
+    //}
 }
 
 void WebPage::generateWordFrequenceMap(SplitTool * p_split_tool)

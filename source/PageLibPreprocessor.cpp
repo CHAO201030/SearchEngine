@@ -26,8 +26,6 @@ void PageLibPreprocessor::loadOriginalWebPageOffsetLib()
 {
     cout << "[INFO] : Load Original Web Page Offset Lib...\n";
 
-    // ifstream offset_lib_ifs(Configuration::getInstance()->getConfig("test_offsetlib.dat"));
-
     ifstream offset_lib_ifs(Configuration::getInstance()->getConfig("offsetlib.dat"));
 
     string line;
@@ -51,15 +49,12 @@ void PageLibPreprocessor::unrepeatedHelper()
     cout << "[INFO] : Generate Unrepeated Web Page Lib And Offset Lib...\n";
 
     cout << "[INFO] : Remove Duplicate Web Page...\n";
-
-    // ifstream web_page_lib_ifs(Configuration::getInstance()->getConfig("test_webpagelib.dat"));
-    // ofstream unrepeated_web_page_lib_ofs(Configuration::getInstance()->getConfig("test_unrepeated_webpage.dat"));
-    // ofstream unrepeated_offset_lib_ofs(Configuration::getInstance()->getConfig("test_unrepeated_offsetlib.dat"));
     
     ifstream web_page_lib_ifs(Configuration::getInstance()->getConfig("webpage.dat"));
     ofstream unrepeated_web_page_lib_ofs(Configuration::getInstance()->getConfig("unrepeated_webpage.dat"));
     ofstream unrepeated_offset_lib_ofs(Configuration::getInstance()->getConfig("unrepeated_offsetlib.dat"));
 
+    int new_offset = 0;
     for(size_t i = 0; i < _offset_lib.size(); i++)
     {
         double percentage = double(100) * i / _offset_lib.size();        
@@ -90,9 +85,10 @@ void PageLibPreprocessor::unrepeatedHelper()
         }
         else
         {
+            int new_page_len = 0;
             _page_figure_print_ves.emplace_back(cur_page_figure_print);
-            storeIntoWebPageLib(unrepeated_web_page_lib_ofs, cur_page);
-            storeIntoOffsetLib(unrepeated_offset_lib_ofs, _page_figure_print_ves.size(), offset, page_len);
+            storeIntoWebPageLib(unrepeated_web_page_lib_ofs, cur_page, new_page_len);
+            storeIntoOffsetLib(unrepeated_offset_lib_ofs, _page_figure_print_ves.size(), new_offset, new_page_len);//
         }
 
         delete [] p_buf;
@@ -116,22 +112,25 @@ bool PageLibPreprocessor::isDuplicateWebPage(uint64_t cur_page_figure_print)
     return false;
 }
 
-void PageLibPreprocessor::storeIntoWebPageLib(ofstream & ofs, WebPage & cur_page)
+void PageLibPreprocessor::storeIntoWebPageLib(ofstream & ofs, WebPage & cur_page, int & new_page_len)
 {
-    ofs << "<webpage>\n"
+    ostringstream oss;
+    oss << "<webpage>\n"
         << "\t<docid>"   << _page_figure_print_ves.size() << "</docid>\n"
         << "\t<title>"   << cur_page.getTitle() << "</title>\n"
         << "\t<link>"    << cur_page.getURL() << "</link>\n"
         << "\t<content>" << cur_page.getContent() << "</content>\n"
-        << "</webpage>\n";
+        << "</webpage>\n\0";
 
+    ofs << oss.str();
+
+    new_page_len = oss.str().size();
 }
 
-void PageLibPreprocessor::storeIntoOffsetLib(ofstream & ofs, int doc_id, int offset, int page_len)
+void PageLibPreprocessor::storeIntoOffsetLib(ofstream & ofs, int doc_id, int & offset, int page_len)
 {
-    static int new_offset = 0;
-    ofs << doc_id << " " << new_offset << " " << page_len << "\n";
-    new_offset += page_len + 1;
+    ofs << doc_id << " " << offset << " " << page_len << "\n";
+    offset += page_len;
 }
 
 
@@ -146,8 +145,6 @@ void PageLibPreprocessor::generateInvertIndexLib()
 void PageLibPreprocessor::loadUnrepeatedWebPageOffsetLib()
 {
     cout << "[INFO] : Load Unrepeated Web Page Offset Lib...\n";
-
-    // ifstream offset_lib_ifs(Configuration::getInstance()->getConfig("test_unrepeated_offsetlib.dat"));
 
     ifstream offset_lib_ifs(Configuration::getInstance()->getConfig("unrepeated_offsetlib.dat"));
 
@@ -171,9 +168,6 @@ void PageLibPreprocessor::invertIndexHelper()
 {
     cout << "[INFO] : Generate Invert Index Lib...\n";
     cout << "[INFO] : Load Unrepeated Web Page Lib...\n";
-
-    // ifstream unrepeated_web_page_lib_ifs(Configuration::getInstance()->getConfig("test_unrepeated_webpage.dat"));
-    // ofstream invert_index_lib_ofs(Configuration::getInstance()->getConfig("test_invert_index_lib.dat"));
 
     ifstream unrepeated_web_page_lib_ifs(Configuration::getInstance()->getConfig("unrepeated_webpage.dat"));
     ofstream invert_index_lib_ofs(Configuration::getInstance()->getConfig("invert_index_lib.dat"));
@@ -209,10 +203,10 @@ void PageLibPreprocessor::invertIndexHelper()
         delete [] p_buf;
     }
 
-    cout << "\t-> 100.00%\n";
+    cout << "\t-> 100.00% : " << _offset_lib.size() << "\n";
     cout << "[INFO] : Load Unrepeated Web Page Lib Success...\n";
 
-    cout << "[INFO] : Calculate Web Page Word's TF-IDF...\\n";
+    cout << "[INFO] : Calculate Web Page Word's TF-IDF...\n";
 
     calculateTFIDF(tf_df_umap, doc_weight_ves);
 
@@ -222,7 +216,7 @@ void PageLibPreprocessor::invertIndexHelper()
     
     cout << "\t-> Min-Max-Scaler Web Page Word's TF-IDF Success\n";
 
-    cout << "[INFO] : Calculate Web Page Word's TF-IDF Success...\\n";
+    cout << "[INFO] : Calculate Web Page Word's TF-IDF Success...\n";
 
     storeIntoInvertIndexLib(invert_index_lib_ofs);
 
@@ -245,7 +239,7 @@ void PageLibPreprocessor::calculateTFIDF(TF_DF_MAP & tf_df_umap, WEIGHT_VES & do
     for(auto & it : tf_df_umap)
     {
         double percentage = double(100) * i / tf_df_umap.size();        
-        printf("\t  -> %5.2f%% : %ld\r", percentage, i);
+        printf("\t-> %5.2f%% : %ld\r", percentage, i);
         fflush(stdout);
 
         size_t N  = _offset_lib.size();
@@ -266,7 +260,7 @@ void PageLibPreprocessor::calculateTFIDF(TF_DF_MAP & tf_df_umap, WEIGHT_VES & do
         }
     }
 
-    printf("\t  -> 100.00%%\n");
+    printf("\t-> 100.00%% : %ld\n", tf_df_umap.size());
 }
 
 void PageLibPreprocessor::minMaxScaler(WEIGHT_VES & doc_weight_ves)
