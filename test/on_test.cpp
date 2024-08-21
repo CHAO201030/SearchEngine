@@ -1,5 +1,6 @@
 #include <cpp58.hpp>
-
+#include "../include/nlohmann/json.hpp"
+using namespace nlohmann;
 #define TEST_COUNT 20
 
 using STR_DISTANCE_FREQUENCE = pair<string, pair<int, int>>;
@@ -151,19 +152,37 @@ int main(int argc, char **argv)
     // set<int> query_word_set = queryWordSetIntersection(set_ves);
     //
     // cout << query_word_set << "\n";
+    //
+    // priority_queue<pair<int, double>> q;
+    //
+    // q.push(make_pair(10001, 1));
+    // q.push(make_pair(10422, 0.984));
+    // q.push(make_pair(10003, 0.999));
+    //
+    // for(size_t i = 0; i < 3; i++)
+    // {
+    //     cout << q.top().first << " " << q.top().second << "\n";
+    //     q.pop();
+    // }
 
-    priority_queue<pair<int, double>> q;
+    vector<vector<string>> ves = {{"WD", "58", "SDU"}, {"WD", "http://gongyi.people.com.cn/n1/2021/0401/c151132-32067582.html", "MSU"}};
 
-    q.push(make_pair(10001, 1));
-    q.push(make_pair(10422, 0.984));
-    q.push(make_pair(10003, 0.999));
+    json child_json;
 
-    for(size_t i = 0; i < 3; i++)
+    for(size_t i = 0; i < ves.size(); i++)
     {
-        cout << q.top().first << " " << q.top().second << "\n";
-        q.pop();
+        
+        string title = "<p>" + ves[i][0] + "</p>";
+        string link = "<a href=\"" + ves[i][1] +"\">";
+        string content = "<p>" + ves[i][2] + "</p>";
+
+        string res = "<div>" + link + title + "</a>" + content + "</div>";
+        cout << res << "\n";
+
+        child_json.push_back(res);
     }
 
+    cout << "\n" << child_json.dump() << "\n";
     return 0;
 }
 

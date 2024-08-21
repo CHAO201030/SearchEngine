@@ -39,9 +39,10 @@ public:
 
     uint64_t getFigurePrint();
 
-private:
     // 处理网页模块
     void extractWebPage();
+
+private:
 
     // 生成网页词频模块
     void generateWordFrequenceMap(SplitTool * p_split_tool);

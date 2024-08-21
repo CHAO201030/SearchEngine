@@ -1,13 +1,15 @@
 #include "../include/SearchEngineServer.h"
 
-int main(void)
+void test()
 {
-    // SearchEngineServer se_ser(1);
-    NetServer server(1);
-    
-    server.loadModules();
+    SearchEngineServer server(1);
 
     server.start();
+}
+
+int main(void)
+{
+    test();
 
     return 0;
 }

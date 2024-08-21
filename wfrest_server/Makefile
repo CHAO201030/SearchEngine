@@ -11,7 +11,7 @@ OBJS += $(patsubst %.cpp, %.o, $(SRCS_CPP))
 Out  := main
 
 CXX := g++
-CXXFLAGS = -Wall -g -std=c++11 -lwfrest -lworkflow
+CXXFLAGS = -g -std=c++11 -lwfrest -lworkflow -ltinyxml2
 
 $(Out) : $(OBJS)
 	$(CXX) $^ -o $@ $(CXXFLAGS)

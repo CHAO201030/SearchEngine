@@ -9,9 +9,8 @@ public:
     SearchEngineServer(int count);
     
     void start();
+
     void stop();
-private:
-    void loadingDataSet();
 
 private:
     NetServer _server;

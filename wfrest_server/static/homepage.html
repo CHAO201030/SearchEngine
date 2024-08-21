@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <title>洪山区少儿编程一大队搜索引擎</title>
+    <title>洪山区少儿编程</title>
     <style>
+        
         body
         {
             margin: 0;
@@ -17,7 +18,7 @@
         {
             margin: 50px auto;
             width: 60%;
-            max-width: 600px;
+            max-width: 1200px;
             text-align: center;
         }
         h1
@@ -87,9 +88,10 @@
         }
         .response-container
         {
+            width: auto;
             margin-top: 20px;
-            text-align: center;
-            padding: 110px;
+            text-align: left;
+            padding: 80px;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -102,6 +104,7 @@
             border-radius: 4px;
             overflow-x: auto;
         }
+    
     </style>
 
     <!-- 浏览器前端交互脚本 -->
@@ -126,8 +129,12 @@
                         return response.json(); // Parse JSON from the response
                     })
                     .then(data => {
+                        if(Array.isArray(data)){
+                            responseContainer.innerHTML = data.join(" ");
+                        }
                         // Display the JSON response in the response container
-                        responseContainer.innerHTML = `<div>${JSON.stringify(data, null, 2)}</div>`;
+                        // responseContainer.innerHTML = `<div>${JSON.stringify(data, null, 2)}</div>`;
+
                     })
                     .catch(error => {
                         console.error('Fetch error:', error);
@@ -193,7 +200,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>洪山区少儿编程</h1>
+        <h1>洪山区少儿编程一大队搜索引擎</h1>
         <form class="search-form">
             <input type="text" name="query" class="search-input" placeholder="Enter your search terms...">
             <button type="submit" class="search-btn">Search</button>
