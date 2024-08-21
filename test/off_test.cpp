@@ -120,7 +120,7 @@ int main()
 
    /*
     unordered_map<string, vector<pair<int, int>>> tf_df_map;
-    map<string, int> wf_map1({{"hello", 1}, {"hi", 2}});
+    map<string, int> wf_map1({{"hello", 11}, {"hi", 22}, {"tg", 886}});
     map<string, int> wf_map2({{"hello", 99}, {"hi", 88}, {"tg", 520}});
 
     int i = 1;

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>洪山区少儿编程一大队搜索引擎</title>
+    <style>
+        body
+        {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #202124;
+        }
+        .container
+        {
+            margin: 50px auto;
+            width: 60%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1
+        {
+            text-align: center;
+            color: #333;
+        }
+        .search-form
+        {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .search-input
+        {
+            /* 搜索框样式 */
+
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .search-btn
+        {
+            /* 搜索按钮样式 */
+
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #dfe1e5;
+            border-radius: 4px;
+            color: #3c4043;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+        }
+        .search-btn:hover
+        {
+            /* 搜索按钮点击颜色 */
+
+            background-color: #d2d2d2;
+            border-color: #949598;
+        }
+        .suggestions
+        {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .suggestions a
+        {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            font-size: 14px;
+            color: #007BFF;
+            text-decoration: none;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .suggestions a:hover
+        {
+            background-color: #e9e9e9;
+        }
+        .response-container
+        {
+            margin-top: 20px;
+            text-align: center;
+            padding: 110px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        pre
+        {
+            text-align: left;
+            background-color: #e9e9e9;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+
+    <!-- 浏览器前端交互脚本 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector('.search-form');
+        const searchInput = document.querySelector('.search-input');
+        const responseContainer = document.querySelector('.response-container');
+        const suggestionsContainer = document.querySelector('.suggestions');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const query = searchInput.value.trim();
+
+            if (query.length > 0) {
+                fetch(`/search?query=${encodeURIComponent(query)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Parse JSON from the response
+                    })
+                    .then(data => {
+                        // Display the JSON response in the response container
+                        responseContainer.innerHTML = `<div>${JSON.stringify(data, null, 2)}</div>`;
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        responseContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                    });
+            } else {
+                responseContainer.innerHTML = `<p style="color: red;">Please enter a search term.</p>`;
+            }
+        });
+
+        // Existing suggestions logic
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            // Clear previous suggestions
+            suggestionsContainer.innerHTML = '';
+
+            if (query.length > 0) {
+                getSuggestions(query).then(suggestions => {
+                    suggestions.forEach(suggestion => {
+                        const link = document.createElement('a');
+                        link.href = 'javascript:void(0);';
+                        link.textContent = suggestion;
+                        link.classList.add('suggestion-item');
+                        link.addEventListener('click', function() {
+                            fillSearchBox(suggestion);
+                        });
+                        suggestionsContainer.appendChild(link);
+                    });
+                });
+            }
+        });
+
+        function fillSearchBox(query) {
+            searchInput.value = query;
+        }
+
+        function getSuggestions(query) {
+            const apiUrl = `http://192.168.239.128:8888/recommend?query=${encodeURIComponent(query)}`;
+
+            return fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        return data;
+                    } else {
+                        console.error('Unexpected response format:', data);
+                        return [];
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    return [];
+                });
+        }
+    });
+</script>
+</head>
+<body>
+    <div class="container">
+        <h1>洪山区少儿编程</h1>
+        <form class="search-form">
+            <input type="text" name="query" class="search-input" placeholder="Enter your search terms...">
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+        <div class="suggestions">
+            <!-- Suggestions will be dynamically added here -->
+        </div>
+        <div class="response-container">
+            <!-- The JSON response will be displayed here -->
+        </div>
+    </div>
+</body>
+</html>
