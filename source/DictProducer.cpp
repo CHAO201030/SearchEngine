@@ -96,13 +96,15 @@ void DictProducer::buildEnglishDict()
     cout << "[INFO] : Build English Dict begin...\n"
          << "[INFO] : Load Files...\n";
 
+    map<string, int> temp_dict;
+
     for(auto & file_name : _files)
     {        
         ifstream ifs(file_name);
 
         string word;
 
-        map<string, int> temp_dict;
+        // map<string, int> temp_dict;
 
         while(ifs >> word)
         {
@@ -116,12 +118,14 @@ void DictProducer::buildEnglishDict()
             }
         }
 
-        saveWord(temp_dict);
+        // saveWord(temp_dict);
 
         ifs.close();
 
         cout << "\t-> " << file_name << " success\n";
     }
+
+    saveWord(temp_dict);
 
     cout << "[INFO] : Build English Dict Success...\n\n";
 }
@@ -130,6 +134,8 @@ void DictProducer::buildChineseDict()
 {
     cout << "[INFO] : Build Chinese Dict begin...\n"
          << "[INFO] : Load Files...\n";
+
+    map<string, int> temp_dict;
 
     for(auto & file_name : _files)
     {
@@ -145,7 +151,7 @@ void DictProducer::buildChineseDict()
 
         vector<string> split_res = _cut_tool->cut(content);
 
-        map<string, int> temp_dict;
+        // map<string, int> temp_dict;
 
         for(auto & word : split_res)
         {
@@ -155,12 +161,14 @@ void DictProducer::buildChineseDict()
             }
         }
 
-        saveWord(temp_dict);
+        // saveWord(temp_dict);
 
         ifs.close();
 
         cout << "\t-> " << file_name << " success\n";
     }
+
+    saveWord(temp_dict);
 
     cout << "[INFO] : Build Chinese Dict Success...\n\n";
 }

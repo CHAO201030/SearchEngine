@@ -129,7 +129,7 @@ void PageLibPreprocessor::storeIntoWebPageLib(ofstream & ofs, WebPage & cur_page
 
 void PageLibPreprocessor::storeIntoOffsetLib(ofstream & ofs, int doc_id, int & offset, int page_len)
 {
-    ofs << doc_id << " " << offset << " " << page_len << "\n";
+    ofs << doc_id << " " << offset << " " << page_len - 1 << "\n";
     offset += page_len;
 }
 
