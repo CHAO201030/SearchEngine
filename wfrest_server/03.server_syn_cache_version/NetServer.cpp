@@ -122,8 +122,6 @@ void NetServer::webPageSearchMoudle()
 
                 resp->String(value);
             }
-
-            // server_cache_manager.updateAllThreadDoubleCache();
         }
     });
 }
