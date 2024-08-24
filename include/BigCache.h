@@ -8,15 +8,15 @@
 using std::mutex;
 using std::lock_guard;
 
-class BigCache : public Cache
+class BigCache
 {
 public:
-    static Cache * getInstance();
+    static BigCache * getInstance();
 
 public:
-    virtual pair<string, string> getKV(string key) override;
-    virtual bool setKV(string key, string value) override;
-    virtual bool updataCache() override;
+    pair<string, string> getKV(string key);
+    bool setKV(string key, string value);
+    bool updataCache();
 
 private:
     BigCache();
@@ -31,7 +31,7 @@ private:
     bool noSwapOut(pair<string, string> key_value);
     void updataCacheOrder(pair<string, string> key_value);
 private:
-    static Cache * _p_cache;
+    static BigCache * _p_cache;
 
     unordered_map<string, list<pair<string, string>>::iterator> _search_map;
 
