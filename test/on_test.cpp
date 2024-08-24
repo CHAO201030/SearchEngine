@@ -1,5 +1,8 @@
 #include <cpp58.hpp>
 #include "../include/nlohmann/json.hpp"
+#include <workflow/WFTaskFactory.h>
+#include <workflow/WFFacilities.h>
+
 using namespace nlohmann;
 #define TEST_COUNT 20
 
@@ -97,6 +100,27 @@ struct std::less<pair<int, double>>
 vector<pair<string, int>> dict_vec;
 map<string, set<int>> index_map;
 
+WFFacilities::WaitGroup wg(1);
+
+void timerFunc(WFTimerTask * timer_task)
+{
+    cout << "Time out\n";
+
+    WFTimerTask * task = WFTaskFactory::create_timer_task(1,0, timerFunc);
+
+    series_of(timer_task)->push_back(task);
+}
+
+ostream & operator<<(ostream & os, const list<int> & rhs)
+{
+    for(auto lit = rhs.begin(); lit != rhs.end(); ++lit)
+    {
+        os << *lit << " ";
+    }
+
+    return os;
+}
+
 int main(int argc, char **argv)
 {
     // loadDict(dict_vec);
@@ -110,9 +134,9 @@ int main(int argc, char **argv)
     //     generateCandidateWordsSet(query_word);
     //     cout << " >> ";
     // }
-    //
+
     // cout << minEditDistance("hello", "hello") << "\n";
-    //
+
     // priority_queue<STR_DISTANCE_FREQUENCE> recommend_word_queue;
     // recommend_word_queue.push({"apple", {10, 5}});
     // recommend_word_queue.push({"banana", {5, 20}});
@@ -127,7 +151,7 @@ int main(int argc, char **argv)
     // STR_DISTANCE_FREQUENCE p2({"banana", {5, 20}});
     //
     // cout << (p2 < p1) << "\n";
-    //
+
     // vector<string> split_res = {"我", "北京大学", "哈哈", "它", "上海大学", "你", "的", "他们"};
     //
     // unordered_set<string> stop_words_set = {"哈哈", "它", "的", "他们"};
@@ -142,7 +166,7 @@ int main(int argc, char **argv)
     //     }
     //     ++it;
     // }
-    //    
+
     // set<int> s1 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     // set<int> s2 = {11, 2, 31, 4, 51, 6, 7, 8, 9};
     // set<int> s3 = {1, 2, 13, 4, 5, 6, 17, 8, 19};
@@ -165,24 +189,43 @@ int main(int argc, char **argv)
     //     q.pop();
     // }
 
-    vector<vector<string>> ves = {{"WD", "58", "SDU"}, {"WD", "http://gongyi.people.com.cn/n1/2021/0401/c151132-32067582.html", "MSU"}};
+    // vector<vector<string>> ves = {{"WD", "58", "SDU"}, {"WD", "http://gongyi.people.com.cn/n1/2021/0401/c151132-32067582.html", "MSU"}};
+    //
+    // json child_json;
+    //
+    // for(size_t i = 0; i < ves.size(); i++)
+    // {
+    //    
+    //     string title = "<p>" + ves[i][0] + "</p>";
+    //     string link = "<a href=\"" + ves[i][1] +"\">";
+    //     string content = "<p>" + ves[i][2] + "</p>";
+    //
+    //     string res = "<div>" + link + title + "</a>" + content + "</div>";
+    //     cout << res << "\n";
+    //
+    //     child_json.push_back(res);
+    // }
+    //
+    // cout << "\n" << child_json.dump() << "\n";
+    
+    // WFTimerTask * timer_task = WFTaskFactory::create_timer_task(1,0, timerFunc);
+    // timer_task->start();
+    // wg.wait();
 
-    json child_json;
 
-    for(size_t i = 0; i < ves.size(); i++)
-    {
-        
-        string title = "<p>" + ves[i][0] + "</p>";
-        string link = "<a href=\"" + ves[i][1] +"\">";
-        string content = "<p>" + ves[i][2] + "</p>";
+    list<int> l1 = {1, 2, 3, 4};
+    list<int> l2 = {3, 4, 5};
 
-        string res = "<div>" + link + title + "</a>" + content + "</div>";
-        cout << res << "\n";
+    auto & a = l1;
+    auto & b = l2;
 
-        child_json.push_back(res);
-    }
+    // swap(a, b);
+    l1.clear();
 
-    cout << "\n" << child_json.dump() << "\n";
+    l1.insert(l1.end(), l2.begin(), l2.end());
+
+    cout << l1 << "\n";
+    cout << l2 << "\n";
     return 0;
 }
 
