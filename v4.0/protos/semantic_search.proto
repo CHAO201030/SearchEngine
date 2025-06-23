@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message pyInferenceReq
+{
+    string query = 1;
+}
+
+message pyInferenceResp
+{
+    repeated int32 doc_id = 1;
+}
+
+service SemanticSearch
+{
+    rpc inference(pyInferenceReq) returns (pyInferenceResp){}
+}
